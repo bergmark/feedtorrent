@@ -2,6 +2,15 @@ module Adam.FeedTorrent.Data where
 
 import Adam.FeedTorrent.PreludeImports
 
+mergeFeeds :: Feed -> Feed -> Feed
+mergeFeeds new old = new { items = items new \\ items old }
+
+data Feed = Feed { channelTitle :: String
+                   , feedId :: String
+                   , items :: [Item]
+                   , location :: FilePath }
+          deriving (Eq, Show, Read)
+
 data Item = Item { itemTitle :: String
                  , itemGuid :: String
                  , enclosureUrl :: String }
@@ -10,8 +19,3 @@ data Item = Item { itemTitle :: String
 uniqueFilename :: String -> String
 uniqueFilename = md5'
 
-data Feed = Feed { channelTitle :: String
-                   , feedId :: String
-                   , items :: [Item]
-                   , location :: FilePath }
-          deriving (Eq, Show, Read)

@@ -56,7 +56,8 @@ cmd_torrents cfg = do
   feeds <- mapM parseFile =<< feedXmls cfg
   newFeeds <- mapM parseFile =<< newFeedXmls cfg
 
-  mergedFeeds <- return (for newFeeds (\newFeed -> maybe newFeed (merge newFeed) ((find ((feedId newFeed ==) . feedId)) feeds)))
+  mergedFeeds <- return . for newFeeds $ \newFeed -> maybe newFeed (mergeFeeds newFeed)
+                                                   ((find ((feedId newFeed ==) . feedId)) feeds)
 
   -- Only download torrents that aren't already stored.
   forM_ mergedFeeds (\feed -> do
@@ -68,10 +69,6 @@ cmd_torrents cfg = do
                           Left e -> error . show $ e
                           Right filename -> putStrLn $ "Downloaded " ++ filename)
                   mv (newFeedPath cfg feed) (oldFeedPath cfg feed))
-
-    where
-      merge :: Feed -> Feed -> Feed
-      merge new old = new { items = items new \\ items old }
 
 cmd_test :: Config -> IO ()
 cmd_test = runTest (cmd_feeds,cmd_torrents)
