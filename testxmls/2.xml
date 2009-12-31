@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Feed 2</title>
+    <link>http://ecmascript.se/feedtorrent/2.xml</link>
+    <description>Manual Labor 1.0</description>
+    <language>en-us</language>
+    <item>
+      <category>2.a</category>
+      <title>2.a.1</title>
+      <description>2.1</description>
+        <guid>http://ecmascript.se/feedtorrent/2.1.torrent</guid>
+        <enclosure url="http://ecmascript.se/feedtorrent/2.1.torrent" length="28" type="application/x-bittorrent" />
+    </item>
+    <item>
+      <category>2.a</category>
+      <title>2.a.2</title>
+      <description>2.2</description>
+        <guid>http://ecmascript.se/feedtorrent/2.2.torrent</guid>
+        <enclosure url="http://ecmascript.se/feedtorrent/2.2.torrent" length="28" type="application/x-bittorrent" />
+    </item>
+  </channel>
+</rss>
