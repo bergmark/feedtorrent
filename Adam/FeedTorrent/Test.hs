@@ -6,28 +6,10 @@ import Adam.FeedTorrent.Download ()
 import Adam.FeedTorrent.PreludeImports
 import Adam.FeedTorrent.Url
 
-type Cmd = Config -> IO ()
-
-
-ok :: Bool -> IO ()
-ok p = putStr $ if p then "." else "X"
-
--- eq :: Eq a => a -> a -> IO ()
--- eq a b = ok (a == b)
-
-filesInDir :: [FilePath] -> FilePath -> IO ()
-filesInDir expected dir = do
-  c <- getDirectoryContents' dir
-  inter <- return $ ((expected \\ c) `union` (c \\ expected))
-  if null inter then ok True
-    else do
-      putStrLn ""
-      putStrLn $ "Expected: " ++ show (sort expected)
-      putStrLn $ "Got: " ++ show (sort c)
-      putStrLn $ "Intersection: " ++ show inter
-
 runTest :: (Cmd,Cmd) -> Config -> IO ()
-runTest (getFeeds,getTorrents) cfg = do
+runTest (getFeeds,getTorrents) _ = do
+  cfg <- getSampleConfig
+
   -- Clear directories
   createDirectoryIfMissing False (torrentDir cfg)
   clearDir (torrentDir cfg)
@@ -65,3 +47,27 @@ runTest (getFeeds,getTorrents) cfg = do
   wwwDir = "/Users/adam/www/feedtorrent"
   mvW :: FilePath -> FilePath -> IO ()
   mvW a b = mv (wwwDir </> a) (wwwDir </> b)
+
+getSampleConfig :: IO Config
+getSampleConfig =
+  return defaultConfig { feedUrls = map Url $ ["http://ecmascript.se/feedtorrent/1.xml"
+                                              ,"http://ecmascript.se/feedtorrent/2.xml"] }
+
+filesInDir :: [FilePath] -> FilePath -> IO ()
+filesInDir expected dir = do
+  c <- getDirectoryContents' dir
+  inter <- return $ ((expected \\ c) `union` (c \\ expected))
+  if null inter then ok True
+    else do
+      putStrLn ""
+      putStrLn $ "Expected: " ++ show (sort expected)
+      putStrLn $ "Got: " ++ show (sort c)
+      putStrLn $ "Intersection: " ++ show inter
+
+ok :: Bool -> IO ()
+ok p = putStr $ if p then "." else "X"
+
+-- eq :: Eq a => a -> a -> IO ()
+-- eq a b = ok (a == b)
+
+type Cmd = Config -> IO ()

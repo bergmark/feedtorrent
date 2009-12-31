@@ -18,11 +18,6 @@ $(derive[''Config])
 configFromJson :: String -> Either String Config
 configFromJson = fromJsonString (undefined :: Config)
 
-getSampleConfig :: IO Config
-getSampleConfig =
-  return defaultConfig { feedUrls = map Url $ ["http://ecmascript.se/feedtorrent/1.xml"
-                                              ,"http://ecmascript.se/feedtorrent/2.xml"] }
-
 defaultConfig :: Config
 defaultConfig =
   Config { feedUrls = []
@@ -36,7 +31,11 @@ jsonFile = "config.json"
 getConfig :: IO (Either String Config)
 getConfig = do
   t <- doesFileExist jsonFile
-  if t then configFromJson <$> readFile jsonFile else return (Right defaultConfig)
+  when (not t) $ writeConfig defaultConfig
+  configFromJson <$> readFile jsonFile
+
+writeConfig :: Config -> IO ()
+writeConfig = writeFile jsonFile . show . toJson
 
 newFeedPath :: Config -> Feed -> FilePath
 newFeedPath cfg feed = newFeedDir cfg </> feedId feed
