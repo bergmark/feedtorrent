@@ -1,14 +1,22 @@
-Name: feedtorrent
-Version: 0.1
-Synopsis:
-Author: Adam Bergmark
-Maintainer: Adam Bergmark <adam@edea.se>
+Name:          feedtorrent
+Version:       0.1
+Stability:     Experimental
+Category:      Web
+Synopsis:      Application for downloading torrent files by RSS.
+Description:   Specify RSS feeds containing enclosed torrent files and the
+               application can download the feeds and download torrent files
+               that have not previously been downloaded. Note that this is not a
+               torrent client, it simply downloads torrent files.
+Author:        Adam Bergmark
+Maintainer:    Adam Bergmark <adam@edea.se>
+License:       GPL-3
+License-File:  License
 Cabal-Version: >= 1.2
-License: BSD3
-Build-Type: Simple
+Build-Type:    Simple
+Homepage:       http://github.com/Raevel/feedtorrent/
 Executable feedtorrent
   Main-is: Main.hs
-library
+Library
   Exposed-Modules: Adam.FeedTorrent.Data
                  , Adam.FeedTorrent.Parser
                  , Adam.FeedTorrent.Download

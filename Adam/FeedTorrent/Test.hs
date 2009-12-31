@@ -1,3 +1,5 @@
+-- | Tests various aspects of the program. Homegrown xUnit like
+--   testing, may switch to HUnit later.
 module Adam.FeedTorrent.Test (runTest) where
 
 import Adam.FeedTorrent.Data
@@ -6,6 +8,7 @@ import Adam.FeedTorrent.Download ()
 import Adam.FeedTorrent.PreludeImports
 import Adam.FeedTorrent.Url
 
+-- | Performs the actual tests using a custom config.
 runTest :: (Cmd,Cmd) -> Config -> IO ()
 runTest (getFeeds,getTorrents) _ = do
   cfg <- getSampleConfig
@@ -48,11 +51,15 @@ runTest (getFeeds,getTorrents) _ = do
   mvW :: FilePath -> FilePath -> IO ()
   mvW a b = mv (wwwDir </> a) (wwwDir </> b)
 
+-- | Custom config for testing. Right now it uses the same directories
+--   as the default config and may thus overwrite production files.
 getSampleConfig :: IO Config
 getSampleConfig =
   return defaultConfig { feedUrls = map Url $ ["http://ecmascript.se/feedtorrent/1.xml"
                                               ,"http://ecmascript.se/feedtorrent/2.xml"] }
 
+-- | Asserts that the given files exist in the given directory, and
+--   that no other files are there.
 filesInDir :: [FilePath] -> FilePath -> IO ()
 filesInDir expected dir = do
   c <- getDirectoryContents' dir
@@ -64,10 +71,12 @@ filesInDir expected dir = do
       putStrLn $ "Got: " ++ show (sort c)
       putStrLn $ "Intersection: " ++ show inter
 
-ok :: Bool -> IO ()
-ok p = putStr $ if p then "." else "X"
-
 -- eq :: Eq a => a -> a -> IO ()
 -- eq a b = ok (a == b)
 
+-- | Asserts that a value is True.
+ok :: Bool -> IO ()
+ok p = putStr $ if p then "." else "X"
+
+-- | Shorthand for commands.
 type Cmd = Config -> IO ()

@@ -1,3 +1,8 @@
+-- | Parses RSS files using HaXml.
+--
+--   Code modified from http://book.realworldhaskell.org/read/extended-example-web-client-programming.html
+--   available under license terms specified at http://creativecommons.org/licenses/by-nc/3.0/
+
 module Adam.FeedTorrent.Parser (parseFile, parse) where
 
 import Text.XML.HaXml hiding (path)
@@ -10,12 +15,12 @@ import Adam.FeedTorrent.PreludeImports
 parseFile :: FilePath -> IO Feed
 parseFile fp = (\contents -> parse contents (takeBaseName fp) fp) <$> readFile fp
 
-{- | Parse the data from a given string, with the given name to use
-in error messages. -}
+-- | Parse the data from a given string, with the given file name. The
+--   last arg specifies the path to the feed.
 parse :: String -> String -> FilePath -> Feed
 parse content name fp =
     Feed { channelTitle = getText doc (tag "title")
-         , items = getEnclosures doc
+         , items = getItems doc
          , feedId = name
          , location = fp }
     where parseResult = xmlParse name (stripUnicodeBOM content)
@@ -30,24 +35,26 @@ parse content name fp =
           stripUnicodeBOM ('\xef':'\xbb':'\xbf':y) = y
           stripUnicodeBOM y = y
 
-{- | Pull out the channel part of the document. -}
+-- | Pull out the channel part of the document.
 getChannel :: CFilter i
 getChannel = tag "rss" /> tag "channel"
 
+-- | Pull out text inside an element.
 getText :: Content i -> CFilter i -> String
 getText item path = contentToStringDefault "N/A" (keep /> path /> txt $ item)
 
-getEnclosures :: Content i -> [Item]
-getEnclosures doc =
-    concatMap procItem $ getItems doc
+-- | Fetches all items in all channels.
+getItems :: Content i -> [Item]
+getItems doc =
+    concatMap procItem $ getItemElements doc
     where procItem :: Content i -> [Item]
           procItem item = concatMap (procEnclosure title guid) enclosure
               where title = getText item (tag "title")
                     guid  = getText item (tag "guid")
                     enclosure = (keep /> tag "enclosure") item
 
-          getItems :: CFilter i
-          getItems = getChannel /> tag "item"
+          getItemElements :: CFilter i
+          getItemElements = getChannel /> tag "item"
 
           procEnclosure :: String -> String -> Content i -> [Item]
           procEnclosure title guid enclosure =
@@ -57,8 +64,8 @@ getEnclosures doc =
                                       , itemGuid = guid
                                       , enclosureUrl = contentToString [y] }
 
-{- | Convert [Content] to a printable String, with a default if the
-passed-in [Content] is [], signifying a lack of a match. -}
+-- | Convert [Content] to a printable String, with a default if the
+--   passed-in [Content] is [], signifying a lack of a match.
 contentToStringDefault :: String -> [Content i] -> String
 contentToStringDefault msg [] = msg
 contentToStringDefault _ y = contentToString y

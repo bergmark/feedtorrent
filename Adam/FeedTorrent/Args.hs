@@ -1,9 +1,11 @@
+-- | Handles parsing of command line arguments.
 module Adam.FeedTorrent.Args (parseArgs, AppArgs (..)) where
 
 import System.Console.ParseArgs hiding (parseArgs)
 
 import Adam.FeedTorrent.PreludeImports
 
+-- | Reads the arguments.
 parseArgs :: IO AppArgs
 parseArgs = do
   res <- parseArgsIO ArgsComplete [argConfig, argCommandFeeds, argCommandTorrents, argCommandTest]
@@ -47,6 +49,7 @@ commandArg argName' abbr desc = Arg {
 requiredArg :: Maybe DataArg
 requiredArg = argDataRequired "string" (ArgtypeString . fromJust)
 
+-- | Contains the information extracted from the args.
 data AppArgs = AppArgs { arg_configFile :: String
                        , arg_commandFeeds :: Bool
                        , arg_commandTorrents :: Bool

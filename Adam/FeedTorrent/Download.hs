@@ -1,5 +1,8 @@
--- Code modified from http://book.realworldhaskell.org/read/extended-example-web-client-programming.html
--- available under license terms specified at http://creativecommons.org/licenses/by-nc/3.0/
+-- | Downloading of files through HTTP.
+--
+--   Code modified from http://book.realworldhaskell.org/read/extended-example-web-client-programming.html
+--   available under license terms specified at http://creativecommons.org/licenses/by-nc/3.0/
+--
 
 module Adam.FeedTorrent.Download where
 
@@ -12,9 +15,11 @@ import Adam.FeedTorrent.Config
 import Adam.FeedTorrent.Data
 import Adam.FeedTorrent.Url
 
+-- | Checks whether the torrent file for an Item is stored on disk.
 doesTorrentExist :: Config -> Item -> IO Bool
 doesTorrentExist cfg item = doesFileExist $ enclosurePath cfg item
 
+-- | If a torrent has not been saved do disk, it is fetched through HTTP.
 getTorrentUnlessExists :: Config -> Item -> IO (Either DownloadError FilePath)
 getTorrentUnlessExists cfg item = do
     fe <- doesTorrentExist cfg item
@@ -22,6 +27,7 @@ getTorrentUnlessExists cfg item = do
       then return (Left TorrentExists)
       else getTorrent cfg item
 
+-- | Fetches a torrent from the web and stores it on disk.
 getTorrent :: Config -> Item -> IO (Either DownloadError FilePath)
 getTorrent cfg item =
     do resp <- download . Url . enclosureUrl $ item
@@ -34,24 +40,21 @@ getTorrent cfg item =
                 return (Right filename)
     where filename = enclosurePath cfg item
 
-maybeToLeft :: a -> Maybe b -> Either b a
-maybeToLeft b Nothing  = Right b
-maybeToLeft _ (Just a) = Left a
-maybeToRight :: a -> Maybe b -> Either a b
-maybeToRight b Nothing  = Left b
-maybeToRight _ (Just a) = Right a
-
+-- | Creates a unique file name from the Url given and stores the file
+--   under the given dir with that name.
 downloadToUnique :: Url -> FilePath -> IO (Either DownloadError FilePath)
 downloadToUnique url destDir = do
   res <- downloadTo url (destDir </> filename)
   return $ maybeToLeft filename res
   where filename = uniqueFilename . fromUrl $ url
 
+-- | Downloads a file and stores the data at the specified path.
 downloadTo :: Url -> FilePath -> IO (Maybe DownloadError)
 downloadTo url dest = download url >>= \dres -> case dres of
   Left de -> return (Just de)
   Right contents -> writeFile dest contents >> return Nothing
 
+-- | Downloads a file and return the contents.
 download :: Url -> IO (Either DownloadError String)
 download url = if isNothing uri then return (Left InvalidUrlFormat) else do
   resp <- simpleHTTP request
@@ -72,6 +75,7 @@ download url = if isNothing uri then return (Left InvalidUrlFormat) else do
                       , rqBody = "" }
     uri = parseURI . fromUrl $ url
 
+-- | Holds possible failures for downloads.
 data DownloadError = TorrentExists
                     | DownloadFailed
                     | ConnectionError String

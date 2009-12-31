@@ -11,12 +11,15 @@ import Adam.FeedTorrent.Config
 import Adam.FeedTorrent.Args
 import Adam.FeedTorrent.Test (runTest)
 
+-- | Prints error messages. For now it is only putStrLn.
 displayError :: String -> IO ()
 displayError = putStrLn
 
+-- | Prints log messages. For now it is only putStrLn.
 log :: String -> IO ()
 log = putStrLn
 
+-- | Parses cmd line arguments and dispatches to application commands.
 main :: IO ()
 main = do
   args <- parseArgs
@@ -28,6 +31,7 @@ main = do
       when (arg_commandTorrents args) $ cmd_torrents cfg
       when (arg_commandTest args) $ cmd_test cfg
 
+-- | Fetches all feeds specified in the config.
 cmd_feeds :: Config -> IO ()
 cmd_feeds cfg = do
   newdirde <- doesDirectoryExist (newFeedDir cfg)
@@ -46,11 +50,16 @@ cmd_feeds cfg = do
                 )
 
 
+-- | All processed feeds.
 feedXmls :: Config -> IO [FilePath]
 feedXmls cfg = map (feedDir cfg </>) <$> (getDirectoryContents' . feedDir) cfg
+
+-- | All unprocessed feeds.
 newFeedXmls :: Config -> IO [FilePath]
 newFeedXmls cfg = map (newFeedDir cfg </>) <$> (getDirectoryContents' . newFeedDir) cfg
 
+-- | Compares unprocessed and processed feeds and downloads new
+--   torrents.
 cmd_torrents :: Config -> IO ()
 cmd_torrents cfg = do
   feeds <- mapM parseFile =<< feedXmls cfg
@@ -69,5 +78,6 @@ cmd_torrents cfg = do
                           Right filename -> putStrLn $ "Downloaded " ++ filename)
                   mv (newFeedPath cfg feed) (oldFeedPath cfg feed))
 
+-- | Runs some tests.
 cmd_test :: Config -> IO ()
 cmd_test = runTest (cmd_feeds,cmd_torrents)
