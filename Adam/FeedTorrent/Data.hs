@@ -2,6 +2,10 @@ module Adam.FeedTorrent.Data where
 
 import Adam.FeedTorrent.PreludeImports
 
+mergeAllFeeds :: [Feed] -> [Feed] -> [Feed]
+mergeAllFeeds feeds newFeeds = for newFeeds $ \newFeed -> maybe newFeed (mergeFeeds newFeed)
+                                                          ((find ((feedId newFeed ==) . feedId)) feeds)
+
 mergeFeeds :: Feed -> Feed -> Feed
 mergeFeeds new old = new { items = items new \\ items old }
 
