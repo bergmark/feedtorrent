@@ -1,3 +1,6 @@
+-- Code modified from http://book.realworldhaskell.org/read/extended-example-web-client-programming.html
+-- available under license terms specified at http://creativecommons.org/licenses/by-nc/3.0/
+
 module Adam.FeedTorrent.Download where
 
 import Network.HTTP
