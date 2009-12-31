@@ -1,4 +1,4 @@
-module Adam.FeedTorrent.Args (parseArgs) where
+module Adam.FeedTorrent.Args (parseArgs, AppArgs (..)) where
 
 import System.Console.ParseArgs hiding (parseArgs)
 

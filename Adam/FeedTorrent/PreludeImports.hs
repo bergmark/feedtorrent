@@ -17,6 +17,7 @@ module Adam.FeedTorrent.PreludeImports
   , for
   , md5'
   , toRight
+  , lif
   ) where
 
 import Control.Applicative
@@ -44,3 +45,6 @@ for = flip map
 toRight :: (b -> b') -> Either a b -> Either a b'
 toRight _ (Left a) = Left a
 toRight f (Right b) = Right (f b)
+
+lif :: Monad m => m Bool -> m a -> m a -> m a
+lif p c a = p >>= \res -> if res then c else a

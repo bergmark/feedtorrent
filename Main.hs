@@ -8,10 +8,8 @@ import Adam.FeedTorrent.Url
 import Adam.FeedTorrent.Parser
 import Adam.FeedTorrent.Download
 import Adam.FeedTorrent.Config
+import Adam.FeedTorrent.Args
 import Adam.FeedTorrent.Test (runTest)
-
-lif :: Monad m => m Bool -> m a -> m a -> m a
-lif p c a = p >>= \res -> if res then c else a
 
 displayError :: String -> IO ()
 displayError = putStrLn
@@ -21,16 +19,14 @@ log = putStrLn
 
 main :: IO ()
 main = do
-  cmd <- lif (null <$> getArgs) (return "") (head <$> getArgs)
+  args <- parseArgs
   ecfg <- getConfig
   case ecfg of
     Left msg -> displayError $ "Error parsing config file: " ++ msg
-    Right cfg ->
-      case cmd of
-        "feeds"    -> cmd_feeds cfg
-        "torrents" -> cmd_torrents cfg
-        "test"     -> cmd_test cfg
-        _          -> displayError "Unknown command, existing commands are: feeds, torrents"
+    Right cfg -> do
+      when (arg_commandFeeds args) $ cmd_feeds cfg
+      when (arg_commandTorrents args) $ cmd_torrents cfg
+      when (arg_commandTest args) $ cmd_test cfg
 
 cmd_feeds :: Config -> IO ()
 cmd_feeds cfg = do
