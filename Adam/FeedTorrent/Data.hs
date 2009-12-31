@@ -1,6 +1,8 @@
 -- | Data declarations
 
-module Adam.FeedTorrent.Data where
+{-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, FlexibleContexts, UndecidableInstances #-}module Adam.FeedTorrent.Data where
+
+import Data.Generics.SYB.WithClass.Derive
 
 import Adam.FeedTorrent.PreludeImports
 
@@ -34,3 +36,9 @@ data Item = Item { itemTitle :: String
 uniqueFilename :: String -> String
 uniqueFilename = md5'
 
+newtype Url = Url String
+            deriving (Eq,Show,Read)
+$(derive[''Url])
+
+fromUrl :: Url -> String
+fromUrl (Url s) = s

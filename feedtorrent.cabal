@@ -23,7 +23,6 @@ Library
                  , Adam.FeedTorrent.Config
                  , Adam.FeedTorrent.Test
                  , Adam.FeedTorrent.PreludeImports
-                 , Adam.FeedTorrent.Url
                  , Adam.FeedTorrent.Args
                  , Main
   Build-Depends: base >= 4.0
