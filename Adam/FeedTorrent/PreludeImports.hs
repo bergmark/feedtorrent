@@ -11,15 +11,14 @@ module Adam.FeedTorrent.PreludeImports
   , module System.Directory
   , module System.FilePath
 
-  -- My own cabals.
-  , module Adam.Shellscript
-
   -- Local declarations.
+  , clearDir
   , getDirectoryContents'
   , for
   , maybeToLeft
   , maybeToRight
   , md5'
+  , mv
   , toRight
   , lif
   ) where
@@ -34,8 +33,6 @@ import Data.Digest.Pure.MD5 (md5)
 import System
 import System.Directory
 import System.FilePath
-
-import Adam.Shellscript
 
 -- | The contents of a folder execept "." and "..".
 getDirectoryContents' :: FilePath -> IO [FilePath]
@@ -67,3 +64,19 @@ maybeToLeft _ (Just a) = Left a
 maybeToRight :: a -> Maybe b -> Either a b
 maybeToRight b Nothing  = Left b
 maybeToRight _ (Just a) = Right a
+
+-- | Removes all files from a dir.
+clearDir :: FilePath -> IO ()
+clearDir dir = rmR dir >> mkdir dir
+
+-- | Recursive removal of a dir.
+rmR :: FilePath -> IO ()
+rmR = removeDirectoryRecursive
+
+-- | Creates a directory.
+mkdir :: FilePath -> IO ()
+mkdir = createDirectory
+
+-- | Renames a file.
+mv :: FilePath -> FilePath -> IO ()
+mv = renameFile

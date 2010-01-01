@@ -34,7 +34,6 @@ Library
                , filepath == 1.1.0.3
                , bytestring == 0.9.1.5
                , pureMD5 == 1.0.0.3
-               , shellscript == 0.1.4
                , RJson == 0.3.7
                , syb-with-class == 0.6.1
                , parseargs == 0.1.2
