@@ -4,7 +4,7 @@
 
 import Data.Generics.SYB.WithClass.Derive
 
-import Adam.FeedTorrent.PreludeImports
+import Adam.FeedTorrent.Imports
 
 -- | Given a list of old (processed) and new (unprocessed) feeds,
 --   returns all feeds that didn't exist (are not in old) and removes

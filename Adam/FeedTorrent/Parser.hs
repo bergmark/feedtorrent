@@ -10,7 +10,7 @@ import Text.XML.HaXml.Parse ()
 
 import Adam.FeedTorrent.Data
 import Adam.FeedTorrent.Config ()
-import Adam.FeedTorrent.PreludeImports
+import Adam.FeedTorrent.Imports
 
 parseFile :: FilePath -> IO Feed
 parseFile fp = (\contents -> parse contents (takeBaseName fp) fp) <$> readFile fp

@@ -3,7 +3,7 @@ module Adam.FeedTorrent.Args (parseArgs, AppArgs (..)) where
 
 import System.Console.ParseArgs hiding (parseArgs)
 
-import Adam.FeedTorrent.PreludeImports
+import Adam.FeedTorrent.Imports
 
 -- | Reads the arguments.
 parseArgs :: IO AppArgs

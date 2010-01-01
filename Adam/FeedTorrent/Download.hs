@@ -10,7 +10,7 @@ import Network.HTTP
 import System.IO
 import Data.Maybe
 import Network.URI (parseURI)
-import Adam.FeedTorrent.PreludeImports
+import Adam.FeedTorrent.Imports
 import Adam.FeedTorrent.Config
 import Adam.FeedTorrent.Data
 

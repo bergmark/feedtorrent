@@ -2,7 +2,7 @@ module Main (main) where
 
 import Prelude hiding (log)
 
-import Adam.FeedTorrent.PreludeImports
+import Adam.FeedTorrent.Imports
 import Adam.FeedTorrent.Data
 import Adam.FeedTorrent.Parser
 import Adam.FeedTorrent.Download

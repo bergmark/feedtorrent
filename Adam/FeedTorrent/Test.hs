@@ -5,7 +5,7 @@ module Adam.FeedTorrent.Test (runTest) where
 import Adam.FeedTorrent.Data
 import Adam.FeedTorrent.Config
 import Adam.FeedTorrent.Download ()
-import Adam.FeedTorrent.PreludeImports
+import Adam.FeedTorrent.Imports
 
 -- | Performs the actual tests using a custom config.
 runTest :: (Cmd,Cmd) -> Config -> IO ()

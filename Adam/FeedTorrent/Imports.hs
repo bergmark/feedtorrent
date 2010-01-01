@@ -1,6 +1,6 @@
 -- | Convinience imports of standard functions used throughout the
 --   app.
-module Adam.FeedTorrent.PreludeImports
+module Adam.FeedTorrent.Imports
   -- Built-ins and hackages.
   ( module Control.Applicative
   , module Control.Arrow
