@@ -6,7 +6,6 @@ module Adam.FeedTorrent.Config where
 import Data.Generics.SYB.WithClass.Derive
 import Text.RJson
 
-import Adam.FeedTorrent.Url
 import Adam.FeedTorrent.PreludeImports
 import Adam.FeedTorrent.Data
 

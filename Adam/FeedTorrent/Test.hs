@@ -6,7 +6,6 @@ import Adam.FeedTorrent.Data
 import Adam.FeedTorrent.Config
 import Adam.FeedTorrent.Download ()
 import Adam.FeedTorrent.PreludeImports
-import Adam.FeedTorrent.Url
 
 -- | Performs the actual tests using a custom config.
 runTest :: (Cmd,Cmd) -> Config -> IO ()
@@ -27,7 +26,7 @@ runTest (getFeeds,getTorrents) _ = do
   -- Download feeds
   getFeeds cfg
   -- Assert feeds end up where they should.
-  filesInDir (map (uniqueFilename . fromUrl) . feedUrls $ cfg) (newFeedDir cfg)
+  filesInDir (map uniqueFilename . feedUrls $ cfg) (newFeedDir cfg)
   -- Download torrents
   getTorrents cfg
   -- Assert torrents end up where they should.
@@ -38,7 +37,7 @@ runTest (getFeeds,getTorrents) _ = do
   mvW "1.2.xml" "1.xml"
 
   getFeeds cfg
-  filesInDir (map (uniqueFilename . fromUrl) . feedUrls $ cfg) (newFeedDir cfg)
+  filesInDir (map uniqueFilename . feedUrls $ cfg) (newFeedDir cfg)
 
   -- Assert only the new item's torrent gets downloaded. 2.* unchanged.
   clearDir (torrentDir cfg)

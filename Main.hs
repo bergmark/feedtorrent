@@ -4,7 +4,6 @@ import Prelude hiding (log)
 
 import Adam.FeedTorrent.PreludeImports
 import Adam.FeedTorrent.Data
-import Adam.FeedTorrent.Url
 import Adam.FeedTorrent.Parser
 import Adam.FeedTorrent.Download
 import Adam.FeedTorrent.Config

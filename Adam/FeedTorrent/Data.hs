@@ -32,13 +32,15 @@ data Item = Item { itemTitle :: String
                  , enclosureUrl :: String }
              deriving (Eq, Show, Read)
 
--- | Generates a probabilistically unique filename from an Url.
-uniqueFilename :: String -> String
-uniqueFilename = md5'
-
+-- | Wrapper for Urls to avoid mixing up argument orders.
 newtype Url = Url String
             deriving (Eq,Show,Read)
 $(derive[''Url])
 
+-- | Converts from Url to String.
 fromUrl :: Url -> String
 fromUrl (Url s) = s
+
+-- | Generates a probabilistically unique filename from an Url.
+uniqueFilename :: Url -> String
+uniqueFilename = md5' . fromUrl

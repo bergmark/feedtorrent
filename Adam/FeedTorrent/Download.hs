@@ -13,7 +13,6 @@ import Network.URI (parseURI)
 import Adam.FeedTorrent.PreludeImports
 import Adam.FeedTorrent.Config
 import Adam.FeedTorrent.Data
-import Adam.FeedTorrent.Url
 
 -- | Checks whether the torrent file for an Item is stored on disk.
 doesTorrentExist :: Config -> Item -> IO Bool
@@ -46,7 +45,7 @@ downloadToUnique :: Url -> FilePath -> IO (Either DownloadError FilePath)
 downloadToUnique url destDir = do
   res <- downloadTo url (destDir </> filename)
   return $ maybeToLeft filename res
-  where filename = uniqueFilename . fromUrl $ url
+  where filename = uniqueFilename $ url
 
 -- | Downloads a file and stores the data at the specified path.
 downloadTo :: Url -> FilePath -> IO (Maybe DownloadError)
