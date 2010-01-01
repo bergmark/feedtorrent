@@ -1,6 +1,7 @@
--- | Data declarations
+-- | Data declarations.
 
-{-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, FlexibleContexts, UndecidableInstances #-}module Adam.FeedTorrent.Data where
+{-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, FlexibleContexts, UndecidableInstances #-}
+module Adam.FeedTorrent.Data where
 
 import Data.Generics.SYB.WithClass.Derive
 
@@ -12,7 +13,7 @@ import Adam.FeedTorrent.Imports
 --   corresponding old feed.
 mergeAllFeeds :: [Feed] -> [Feed] -> [Feed]
 mergeAllFeeds feeds newFeeds = for newFeeds $ \newFeed -> maybe newFeed (mergeFeeds newFeed)
-                                                          ((find ((feedId newFeed ==) . feedId)) feeds)
+                                                          (find ((feedId newFeed ==) . feedId) feeds)
 
 -- | Removes all processed items from a neew feed.
 mergeFeeds :: Feed -> Feed -> Feed

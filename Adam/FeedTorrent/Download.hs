@@ -16,7 +16,7 @@ import Adam.FeedTorrent.Data
 
 -- | Checks whether the torrent file for an Item is stored on disk.
 doesTorrentExist :: Config -> Item -> IO Bool
-doesTorrentExist cfg item = doesFileExist $ enclosurePath cfg item
+doesTorrentExist cfg = doesFileExist . enclosurePath cfg
 
 -- | If a torrent has not been saved do disk, it is fetched through HTTP.
 getTorrentUnlessExists :: Config -> Item -> IO (Either DownloadError FilePath)
@@ -45,7 +45,7 @@ downloadToUnique :: Url -> FilePath -> IO (Either DownloadError FilePath)
 downloadToUnique url destDir = do
   res <- downloadTo url (destDir </> filename)
   return $ maybeToLeft filename res
-  where filename = uniqueFilename $ url
+  where filename = uniqueFilename url
 
 -- | Downloads a file and stores the data at the specified path.
 downloadTo :: Url -> FilePath -> IO (Maybe DownloadError)

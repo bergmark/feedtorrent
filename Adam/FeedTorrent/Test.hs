@@ -20,49 +20,49 @@ runTest (getFeeds,getTorrents) _ = do
   createDirectoryIfMissing False (newFeedDir cfg)
   clearDir (newFeedDir cfg)
 
-  doesFileExist (wwwDir </> "1.orig.xml") >>= \fe ->
-    when fe (mvW "1.xml" "1.2.xml" >> mvW "1.orig.xml" "1.xml")
+  doesFileExist (wwwDir </> "1.orig.xml") >>=
+    flip when (mvW "1.xml" "1.2.xml" >> mvW "1.orig.xml" "1.xml")
 
   -- Download feeds
   getFeeds cfg
   -- Assert feeds end up where they should.
-  filesInDir (map uniqueFilename . feedUrls $ cfg) (newFeedDir cfg)
+  filesInDir (newFeedDir cfg) (map uniqueFilename . feedUrls $ cfg)
   -- Download torrents
   getTorrents cfg
   -- Assert torrents end up where they should.
-  flip filesInDir (torrentDir cfg) ["1.a.1.torrent", "1.a.2.torrent", "2.a.1.torrent", "2.a.2.torrent"]
+  filesInDir (torrentDir cfg) ["1.a.1.torrent", "1.a.2.torrent", "2.a.1.torrent", "2.a.2.torrent"]
 
   -- Change 1.xml to a file that adds 1.a.3.torrent and removes 1.a.1.torrent
   mvW "1.xml" "1.orig.xml"
   mvW "1.2.xml" "1.xml"
 
   getFeeds cfg
-  filesInDir (map uniqueFilename . feedUrls $ cfg) (newFeedDir cfg)
+  filesInDir (newFeedDir cfg) (map uniqueFilename . feedUrls $ cfg)
 
   -- Assert only the new item's torrent gets downloaded. 2.* unchanged.
   clearDir (torrentDir cfg)
   getTorrents cfg
-  flip filesInDir (torrentDir cfg) ["1.a.3.torrent"]
+  filesInDir (torrentDir cfg) ["1.a.3.torrent"]
 
  where
   wwwDir :: FilePath
   wwwDir = "/Users/adam/www/feedtorrent"
   mvW :: FilePath -> FilePath -> IO ()
-  mvW a b = mv (wwwDir </> a) (wwwDir </> b)
+  mvW a = mv (wwwDir </> a) . (wwwDir </>)
 
 -- | Custom config for testing. Right now it uses the same directories
 --   as the default config and may thus overwrite production files.
 getSampleConfig :: IO Config
 getSampleConfig =
-  return defaultConfig { feedUrls = map Url $ ["http://ecmascript.se/feedtorrent/1.xml"
-                                              ,"http://ecmascript.se/feedtorrent/2.xml"] }
+  return defaultConfig { feedUrls = map Url ["http://ecmascript.se/feedtorrent/1.xml"
+                                            ,"http://ecmascript.se/feedtorrent/2.xml"] }
 
 -- | Asserts that the given files exist in the given directory, and
 --   that no other files are there.
-filesInDir :: [FilePath] -> FilePath -> IO ()
-filesInDir expected dir = do
+filesInDir :: FilePath -> [FilePath] -> IO ()
+filesInDir dir expected = do
   c <- getDirectoryContents' dir
-  inter <- return $ ((expected \\ c) `union` (c \\ expected))
+  let inter = ((expected \\ c) `union` (c \\ expected))
   if null inter then ok True
     else do
       putStrLn ""

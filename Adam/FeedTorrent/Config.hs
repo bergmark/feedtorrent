@@ -38,7 +38,7 @@ jsonFile = "config.json"
 getConfig :: IO (Either String Config)
 getConfig = do
   t <- doesFileExist jsonFile
-  when (not t) $ writeConfig defaultConfig
+  unless t $ writeConfig defaultConfig
   configFromJson <$> readFile jsonFile
 
 -- | Writes a configuration to disk.
